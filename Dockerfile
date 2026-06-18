@@ -24,6 +24,7 @@ ENV NODE_ENV=production
 
 COPY backend/package*.json backend/
 COPY --from=build /app/backend/node_modules backend/node_modules
+COPY --from=build /app/backend/scripts backend/scripts
 COPY --from=build /app/backend/src backend/src
 COPY --from=build /app/backend/prisma backend/prisma
 COPY --from=build /app/backend/public backend/public
