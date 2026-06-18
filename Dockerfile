@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY package.json ./
 COPY backend/package*.json backend/
+COPY backend/prisma backend/prisma
 COPY frontend/package*.json frontend/
 
 RUN npm --prefix backend ci
@@ -22,12 +23,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 COPY backend/package*.json backend/
-RUN npm --prefix backend ci --omit=dev
-
+COPY --from=build /app/backend/node_modules backend/node_modules
 COPY --from=build /app/backend/src backend/src
 COPY --from=build /app/backend/prisma backend/prisma
 COPY --from=build /app/backend/public backend/public
-COPY --from=build /app/backend/node_modules/.prisma backend/node_modules/.prisma
 
 WORKDIR /app/backend
 
