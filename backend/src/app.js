@@ -14,7 +14,7 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const frontendDistPath = path.resolve(__dirname, "../../public");
+const frontendDistPath = path.resolve(__dirname, "../public");
 
 app.use(helmet());
 app.use(
