@@ -27,17 +27,15 @@ npm run install:all && npm run build
 ## Start Command
 
 ```bash
-npm start
+npm run start:prod
 ```
 
 ## Database Setup
 
-After setting `DATABASE_URL`, run:
+The production start command runs migrations and seed data automatically:
 
 ```bash
-cd backend
-npx prisma migrate deploy
-npm run seed
+npm run start:prod
 ```
 
 Demo admin:
@@ -53,4 +51,3 @@ admin123
 docker build -t booking-system-demo .
 docker run -p 3000:3000 --env-file backend/.env.production booking-system-demo
 ```
-
