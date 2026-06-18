@@ -1,0 +1,8 @@
+node_modules/
+.npm-cache/
+.env
+dist/
+public/
+*.zip
+*.log
+.DS_Store

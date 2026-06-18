@@ -1,0 +1,15 @@
+{
+  "name": "booking-system-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "install:all": "npm --prefix backend install --cache backend/.npm-cache && npm --prefix frontend install --cache frontend/.npm-cache",
+    "build": "npm --prefix frontend run build && node scripts/copy-frontend.js",
+    "start": "npm --prefix backend start",
+    "demo": "npm run build && npm run start",
+    "db:migrate": "npm --prefix backend run prisma:migrate",
+    "db:seed": "npm --prefix backend run seed"
+  }
+}
+

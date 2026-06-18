@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int           @id @default(autoincrement())
+  name           String        @db.VarChar(80)
+  phone          String?       @unique @db.VarChar(30)
+  email          String        @unique @db.VarChar(120)
+  passwordHash   String        @map("password_hash") @db.VarChar(255)
+  role           UserRole      @default(USER)
+  status         UserStatus    @default(ACTIVE)
+  appointments   Appointment[]
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Service {
+  id              Int           @id @default(autoincrement())
+  name            String        @db.VarChar(120)
+  description     String?       @db.Text
+  durationMinutes Int           @map("duration_minutes")
+  price           Decimal       @db.Decimal(10, 2)
+  coverImage      String?       @map("cover_image") @db.VarChar(255)
+  status          ServiceStatus @default(ACTIVE)
+  timeSlots       TimeSlot[]
+  appointments    Appointment[]
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@map("services")
+}
+
+model TimeSlot {
+  id           Int              @id @default(autoincrement())
+  serviceId    Int              @map("service_id")
+  service      Service          @relation(fields: [serviceId], references: [id])
+  startTime    DateTime         @map("start_time")
+  endTime      DateTime         @map("end_time")
+  capacity     Int              @default(1)
+  bookedCount  Int              @default(0) @map("booked_count")
+  status       TimeSlotStatus   @default(AVAILABLE)
+  appointments Appointment[]
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+
+  @@index([serviceId, startTime])
+  @@map("time_slots")
+}
+
+model Appointment {
+  id           Int               @id @default(autoincrement())
+  userId       Int               @map("user_id")
+  user         User              @relation(fields: [userId], references: [id])
+  serviceId    Int               @map("service_id")
+  service      Service           @relation(fields: [serviceId], references: [id])
+  timeSlotId   Int               @map("time_slot_id")
+  timeSlot     TimeSlot          @relation(fields: [timeSlotId], references: [id])
+  contactName  String            @map("contact_name") @db.VarChar(80)
+  contactPhone String            @map("contact_phone") @db.VarChar(30)
+  note         String?           @db.Text
+  status       AppointmentStatus @default(PENDING)
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+
+  @@unique([userId, timeSlotId])
+  @@index([serviceId])
+  @@index([status])
+  @@map("appointments")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum ServiceStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum TimeSlotStatus {
+  AVAILABLE
+  CLOSED
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  REJECTED
+  COMPLETED
+}
+
